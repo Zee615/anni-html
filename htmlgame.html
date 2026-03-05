@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Months of Us | Elika's Surprise</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff85a2;
+            --deep-rose: #ff477e;
+            --soft-purple: #7d5ba6;
+            --bg-lavender: #f9f5ff;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-lavender);
+            color: #444;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Header Section --- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4.5em;
+            color: var(--deep-rose);
+            margin-bottom: 10px;
+            animation: fadeInDown 1.5s ease;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--soft-purple);
+            animation: fadeInUp 2s ease;
+        }
+
+        /* --- Global Components --- */
+        .section {
+            padding: 80px 20px;
+            max-width: 900px;
+            margin: auto;
+            display: none;
+            /* Sections reveal as she plays */
+        }
+
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: var(--deep-rose);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 71, 126, 0.3);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: var(--primary-pink);
+        }
+
+        /* --- Game 1: Heart Catch --- */
+        #game-canvas {
+            background: #fff0f5;
+            border-radius: 15px;
+            border: 3px dashed var(--primary-pink);
+            cursor: crosshair;
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .mini-heart {
+            position: absolute;
+            font-size: 25px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        /* --- Game 2: The Memory Match --- */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .memory-card {
+            height: 80px;
+            background: var(--soft-purple);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: transparent;
+            cursor: pointer;
+        }
+
+        .memory-card.flipped {
+            background: var(--white);
+            color: var(--deep-rose);
+            border: 2px solid var(--deep-rose);
+        }
+
+        /* --- Game 3: Love Quiz --- */
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: #ffe1e9;
+        }
+
+        /* --- Surprise Slot Machine --- */
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+
+        .slot {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 120px;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            z-index: 999;
+        }
+
+        /* Progress Bar */
+        .progress-wrapper {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            z-index: 1000;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.8);
+            height: 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 5%;
+            background: var(--deep-rose);
+            border-radius: 10px;
+            transition: 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header id="level-0">
+        <h1>Hi Elika...</h1>
+        <p class="subtitle">I made something for our 4-month anniversary.</p>
+        <br>
+        <button class="btn" onclick="nextLevel(1)">Unlock the Journey</button>
+    </header>
+
+    <div class="section" id="level-1">
+        <div class="card">
+            <h2>Level 1: Collect My Love</h2>
+            <p>I've dropped 10 hearts. Catch them all to continue!</p>
+            <div id="game-canvas"></div>
+            <p>Hearts Caught: <span id="heart-count">0</span>/10</p>
+        </div>
+    </div>
+
+    <div class="section" id="level-2">
+        <div class="card">
+            <h2>Level 2: Memory Match</h2>
+            <p>Find the pairs of things we love!</p>
+            <div class="memory-grid" id="memory-grid"></div>
+        </div>
+    </div>
+
+    <div class="section" id="level-3">
+        <div class="card">
+            <h2>Level 3: The Love Quiz</h2>
+            <p id="question-text">Loading question...</p>
+            <div id="quiz-options"></div>
+        </div>
+    </div>
+
+    <div class="section" id="level-4">
+        <div class="card">
+            <h2>Level 4: The Love Machine</h2>
+            <p>Spin to see just a few reasons why I'm crazy about you.</p>
+            <div class="slot-machine">
+                <div class="slot" id="slot1">Elika is...</div>
+                <div class="slot" id="slot2">???</div>
+            </div>
+            <br>
+            <button class="btn" onclick="spinSlot()">Spin the Love!</button>
+            <button class="btn" id="final-btn" style="display:none; margin-top: 20px;" onclick="nextLevel(5)">Open Final
+                Letter</button>
+        </div>
+    </div>
+
+    <div class="section" id="level-5">
+        <div class="card">
+            <h1 style="font-size: 3em;">Happy 4 Months!</h1>
+            <p style="line-height: 1.8; font-size: 1.2em;">
+                Dearest Elika,<br><br>
+                These last 4 months have been the best of my life. From our first conversation to right now,
+                every moment feels like a dream I don't want to wake up from. You are my best friend,
+                my biggest supporter, and my favorite person in the entire world.<br><br>
+                Thank you for being you. Here is to many, many more months (and years) of us.<br><br>
+                <strong>I love you! ❤️</strong>
+            </p>
+            <div id="confetti-anchor"></div>
+        </div>
+    </div>
+
+    <div class="progress-wrapper">
+        <div class="progress-container">
+            <div class="progress-bar" id="main-progress"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 0;
+        const totalLevels = 5;
+
+        function updateGlobalProgress() {
+            const bar = document.getElementById('main-progress');
+            bar.style.width = (currentLevel / totalLevels * 100) + '%';
+        }
+
+        function nextLevel(lvl) {
+            // Hide current
+            const currentSection = document.getElementById(`level-${currentLevel}`);
+            if (currentSection) currentSection.style.display = 'none';
+
+            // Show next
+            currentLevel = lvl;
+            const nextSection = document.getElementById(`level-${currentLevel}`);
+            nextSection.style.display = 'block';
+
+            updateGlobalProgress();
+            window.scrollTo(0, 0);
+
+            // Trigger specific level logic
+            if (lvl === 1) startHeartGame();
+            if (lvl === 2) startMemoryGame();
+            if (lvl === 3) startQuiz();
+            if (lvl === 5) startFinalCelebration();
+        }
+
+        /* --- LEVEL 1 LOGIC: HEART CATCH --- */
+        let caught = 0;
+        function startHeartGame() {
+            const canvas = document.getElementById('game-canvas');
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.className = 'mini-heart';
+                    heart.style.left = Math.random() * 90 + '%';
+                    heart.style.top = Math.random() * 80 + '%';
+                    heart.onclick = () => {
+                        heart.style.transform = 'scale(2)';
+                        heart.style.opacity = '0';
+                        setTimeout(() => heart.remove(), 200);
+                        caught++;
+                        document.getElementById('heart-count').innerText = caught;
+                        if (caught === 10) setTimeout(() => nextLevel(2), 500);
+                    };
+                    canvas.appendChild(heart);
+                }, i * 400);
+            }
+        }
+
+        /* --- LEVEL 2 LOGIC: MEMORY --- */
+        const emojis = ['🌹', '🌹', '🧸', '🧸', '🍕', '🍕', '💎', '💎', '🌙', '🌙', '🍦', '🍦'];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function startMemoryGame() {
+            const grid = document.getElementById('memory-grid');
+            const shuffled = emojis.sort(() => Math.random() - 0.5);
+            shuffled.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.emoji = emoji;
+                card.innerText = emoji;
+                card.onclick = () => {
+                    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                        card.classList.add('flipped');
+                        flippedCards.push(card);
+                        if (flippedCards.length === 2) checkMatch();
+                    }
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        function checkMatch() {
+            const [c1, c2] = flippedCards;
+            if (c1.dataset.emoji === c2.dataset.emoji) {
+                matchedPairs++;
+                flippedCards = [];
+                if (matchedPairs === 6) setTimeout(() => nextLevel(3), 1000);
+            } else {
+                setTimeout(() => {
+                    c1.classList.remove('flipped');
+                    c2.classList.remove('flipped');
+                    flippedCards = [];
+                }, 800);
+            }
+        }
+
+        /* --- LEVEL 3 LOGIC: QUIZ --- */
+        const quizData = [
+            { q: "How many months have we been together?", a: ["2 Months", "4 Months", "Forever"], correct: 1 },
+            { q: "Who loves the other more?", a: ["You", "Me", "It's a Tie (But really me)"], correct: 2 }
+        ];
+        let currentQ = 0;
+
+        function startQuiz() {
+            const q = quizData[currentQ];
+            document.getElementById('question-text').innerText = q.q;
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            q.a.forEach((opt, idx) => {
+                const b = document.createElement('button');
+                b.className = 'quiz-option';
+                b.innerText = opt;
+                b.onclick = () => {
+                    if (idx === q.correct) {
+                        currentQ++;
+                        if (currentQ < quizData.length) startQuiz();
+                        else nextLevel(4);
+                    } else {
+                        alert("Try again, my love! ❤️");
+                    }
+                };
+                optionsDiv.appendChild(b);
+            });
+        }
+
+        /* --- LEVEL 4 LOGIC: SLOTS --- */
+        const reasons = ["Beautiful", "Kind", "Hilarious", "My Everything", "The Best Cook", "Smart", "Adorable"];
+        let spins = 0;
+        function spinSlot() {
+            const slot2 = document.getElementById('slot2');
+            let count = 0;
+            const interval = setInterval(() => {
+                slot2.innerText = reasons[Math.floor(Math.random() * reasons.length)];
+                count++;
+                if (count > 10) {
+                    clearInterval(interval);
+                    spins++;
+                    if (spins >= 3) document.getElementById('final-btn').style.display = 'inline-block';
+                }
+            }, 100);
+        }
+
+        /* --- LEVEL 5: CONFETTI --- */
+        function startFinalCelebration() {
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = ['#ff85a2', '#ff477e', '#7d5ba6'][Math.floor(Math.random() * 3)];
+                confetti.style.top = '-10px';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+
+                const animation = confetti.animate([
+                    { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                    { transform: `translate3d(${Math.random() * 100 - 50}px, 100vh, 0) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    iterations: Infinity
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
